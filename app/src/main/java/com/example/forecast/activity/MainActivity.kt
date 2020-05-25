@@ -34,12 +34,10 @@ open class MainActivity : Navigation(0) {
     private lateinit var weatherSpeed: TextView
     private lateinit var weatherCompass: TextView
     private lateinit var image: ImageView
-    private lateinit var navigat: BottomNavigationView
     private var compas:String=""
     private var lon:Double?=null
     private var lat:Double?=null
     private lateinit var api:ApiService
-    private var myCompositeDisposable: CompositeDisposable? = null
 
     private val TAG = "MainActivity"
     var LOCATION_REQUEST_CODE = 10001
@@ -57,18 +55,15 @@ open class MainActivity : Navigation(0) {
         weatherSpeed = findViewById(R.id.txt_wind)
         weatherCompass = findViewById(R.id.txt_compass)
         image=findViewById(R.id.icon_wheat)
-        //weaLoc = findViewById(R.id.loc)
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-        //getCurrentData()
-        navigat=findViewById(R.id.bottom_navigation_view)
-        navigat.setOnNavigationItemReselectedListener {  }
+        val retrofit=RetrofitClient.instance
+        api=retrofit.create(ApiService::class.java)
 
     }
 
     private fun getCurrentData() {
-        val retrofit=RetrofitClient.instance
-        api=retrofit.create(ApiService::class.java)
-        //weatherCity.text=lon.toString() + " ? "+lat.toString()
+//        val retrofit=RetrofitClient.instance
+//        api=retrofit.create(ApiService::class.java)
 
         val observable = api.getCurrentWeatherData("${lat.toString()}", "${lon.toString()}","metric", "67901cf7da944ab97cf90b4656ad27b4")
             .subscribeOn(Schedulers.io())
@@ -109,6 +104,15 @@ open class MainActivity : Navigation(0) {
 
     override fun onStart() {
         super.onStart()
+        getAndAsk()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getAndAsk()
+    }
+
+    private fun getAndAsk(){
         if (ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
