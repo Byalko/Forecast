@@ -6,6 +6,10 @@ import com.example.forecast.R
 import com.example.forecast.model.WeatherList
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.row.view.*
+import java.text.SimpleDateFormat
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 class WeekAdapter(private val weath: List<WeatherList>)
     : RecyclerView.Adapter<WeekAdapter.ViewHolder>(){
@@ -23,7 +27,12 @@ class WeekAdapter(private val weath: List<WeatherList>)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val post = weath[position]
         with(holder) {
-            view.TimeItem.text=post.dt_txt
+            val date = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("${weath[position].dt_txt}")
+            val datee = ZonedDateTime
+                .parse(date.toString(), DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH))
+                .toLocalTime()
+
+            view.TimeItem.text=datee.toString()
             view.DesItem.text=post.weather[0].description
             view.DegreeItem.text=post.main.temp.toInt().toString()+"°C"
 

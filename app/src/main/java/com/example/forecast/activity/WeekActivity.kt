@@ -1,12 +1,15 @@
 package com.example.forecast.activity
 
-import WeekAdapter
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.forecast.R
+import com.example.forecast.adapter.ContainerAdapter
+import com.example.forecast.model.RecyclerViewSection
 import com.example.forecast.model.WeatherList
 import com.example.forecast.model.WeatherResponse
 import com.example.forecast.service.ApiService
@@ -18,6 +21,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_week.*
+import java.text.SimpleDateFormat
+import java.time.LocalTime
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+import java.util.*
 
 
 class WeekActivity : Navigation(1) {
@@ -64,11 +73,48 @@ class WeekActivity : Navigation(1) {
         Toast.makeText(this,t.message, Toast.LENGTH_SHORT).show()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun onResponse(response: WeatherResponse) {
         weatherCity.text=response.city.name
         val weath:List<WeatherList>
         weath= response.list
-        RecyclerWeek.adapter = WeekAdapter(weath)
+        var size=-1
+        val date = SimpleDateFormat("yyyy-MM-dd").parse("${weath[0].dt_txt}")
+
+        for (i in 0..8){
+            if (SimpleDateFormat("yyyy-MM-dd").parse("${weath[i].dt_txt}")==date){
+                size += 1
+            }
+        }
+//        var time = android.icu.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("${weath[0].dt_txt}")
+//
+//        weatherCity.text=time.toString()
+
+        val sections = mutableListOf<RecyclerViewSection>()
+        val items1 = mutableListOf<WeatherList>()
+        for (i in 0..size) {
+            items1.add(weath[i])
+        }
+        val section = RecyclerViewSection("TODAY", items1)
+        sections.add(section)
+
+            for (i in 1..4) {
+            val items = mutableListOf<WeatherList>()
+
+            for (i in size+1..size+8) {
+                items.add(weath[i])
+            }
+            val date = SimpleDateFormat("yyyy-MM-dd").parse("${weath[size+8].dt_txt}")
+            val datee = ZonedDateTime
+                .parse(date.toString(), DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH))
+                .toLocalDate()
+            size+=8
+
+            val section = RecyclerViewSection("${datee.dayOfWeek}", items)
+            sections.add(section)
+        }
+
+        RecyclerWeek.adapter = ContainerAdapter(this,sections)
         RecyclerWeek.layoutManager = LinearLayoutManager(this)
 
     }
