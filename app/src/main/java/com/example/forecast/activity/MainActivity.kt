@@ -18,7 +18,6 @@ import com.example.forecast.service.RetrofitClient
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.Task
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.squareup.picasso.Picasso
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -42,6 +41,7 @@ open class MainActivity : Navigation(0) {
     private val TAG = "MainActivity"
     var LOCATION_REQUEST_CODE = 10001
     var fusedLocationProviderClient: FusedLocationProviderClient? = null
+    private var myCompositeDisposable: CompositeDisposable? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,8 +56,25 @@ open class MainActivity : Navigation(0) {
         weatherCompass = findViewById(R.id.txt_compass)
         image=findViewById(R.id.icon_wheat)
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+        myCompositeDisposable = CompositeDisposable()
         val retrofit=RetrofitClient.instance
         api=retrofit.create(ApiService::class.java)
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+        getAndAsk()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getAndAsk()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        myCompositeDisposable?.clear()
 
     }
 
@@ -100,16 +117,6 @@ open class MainActivity : Navigation(0) {
         if(deg in 204..248)  this.compas="SW"
         if(deg in 249..293)  this.compas="W"
         if(deg in 294..338)  this.compas="NW"
-    }
-
-    override fun onStart() {
-        super.onStart()
-        getAndAsk()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        getAndAsk()
     }
 
     private fun getAndAsk(){

@@ -23,10 +23,9 @@ import kotlinx.android.synthetic.main.activity_week.*
 class WeekActivity : Navigation(1) {
     private val TAG="WeekActivity"
     private lateinit var weatherCity: TextView
-    private var myCompositeDisposable: CompositeDisposable? = null
     private lateinit var api: ApiService
     private lateinit var fusedLocationClient : FusedLocationProviderClient
-    //private lateinit var observable:
+    private var myCompositeDisposable: CompositeDisposable? = null
 
     private var lon:Double?=null
     private var lat:Double?=null
@@ -52,6 +51,12 @@ class WeekActivity : Navigation(1) {
     override fun onResume() {
         super.onResume()
         getLastLocation()
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        myCompositeDisposable?.clear()
 
     }
 
@@ -87,7 +92,7 @@ class WeekActivity : Navigation(1) {
         val retrofit = RetrofitClient.instance
         api = retrofit.create(ApiService::class.java)
 
-        val observable=
+        myCompositeDisposable?.add(
             api.getCurrentWeatherData(
                 "${lat.toString()}",
                 "${lon.toString()}",
@@ -97,15 +102,9 @@ class WeekActivity : Navigation(1) {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ response -> onResponse(response) }, { t -> onFailure(t) })
-
+        )
     }
 
-
-    override fun onDestroy() {
-        super.onDestroy()
-        myCompositeDisposable?.clear()
-
-    }
 
 }
 
