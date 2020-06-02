@@ -5,8 +5,6 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -22,17 +20,10 @@ import com.squareup.picasso.Picasso
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 open class MainActivity : Navigation(0) {
-    private lateinit var weatherCity: TextView
-    private lateinit var weatherGrad: TextView
-    private lateinit var weatherRain: TextView
-    private lateinit var weatherWater: TextView
-    private lateinit var weatherDegree: TextView
-    private lateinit var weatherSpeed: TextView
-    private lateinit var weatherCompass: TextView
-    private lateinit var image: ImageView
     private var compas:String=""
     private var lon:Double?=null
     private var lat:Double?=null
@@ -47,14 +38,6 @@ open class MainActivity : Navigation(0) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setupBottomNavigation()
-        weatherCity = findViewById(R.id.city)
-        weatherGrad = findViewById(R.id.gradusy)
-        weatherRain = findViewById(R.id.txt_rainfall)
-        weatherWater = findViewById(R.id.txt_water)
-        weatherDegree = findViewById(R.id.txt_degree)
-        weatherSpeed = findViewById(R.id.txt_wind)
-        weatherCompass = findViewById(R.id.txt_compass)
-        image=findViewById(R.id.icon_wheat)
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         myCompositeDisposable = CompositeDisposable()
         val retrofit=RetrofitClient.instance
@@ -96,16 +79,16 @@ open class MainActivity : Navigation(0) {
         val url= "http://openweathermap.org/img/wn/"+ "${response.list[0].weather[0].icon}" +"@2x.png"
         Picasso.get()
             .load(url)
-            .into(image)
+            .into(icon_wheat)
         val strCity = response.city.name+", "+response.city.country
-        weatherCity.text = strCity
-        weatherGrad.text=response.list[0].main.temp.toInt().toString()+"°C | "+response.list[0].weather[0].main
-        weatherRain.text=response.list[0].main.humidity.toString()+"%"
-        //weatherWater.text=response.list[0].rain.h.toString()+" mm"
-        weatherDegree.text=response.list[0].main.pressure.toString()+" hPa"
-        weatherSpeed.text=((response.list[0].wind.speed)*3.6).toInt().toString()+" km/h"
+        city.text = strCity
+        gradusy.text=response.list[0].main.temp.toInt().toString()+"°C | "+response.list[0].weather[0].main
+        txt_rainfall.text=response.list[0].main.humidity.toString()+"%"
+        //txt_water.text=response.list[0].rain.h.toString()+" mm"
+        txt_degree.text=response.list[0].main.pressure.toString()+" hPa"
+        txt_wind.text=((response.list[0].wind.speed)*3.6).toInt().toString()+" km/h"
         direction(response.list[0].wind.deg)
-        weatherCompass.text=compas
+        txt_compass.text=compas
     }
 
     private fun direction(deg: Int) {

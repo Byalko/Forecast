@@ -5,13 +5,11 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.forecast.R
 import com.example.forecast.model.RecyclerViewSection
-import kotlinx.android.synthetic.main.activity_week.*
-import kotlinx.android.synthetic.main.item_container.*
+import kotlinx.android.synthetic.main.item_container.view.*
 
 class ContainerAdapter(private val context: Context,
                        private val sections : List<RecyclerViewSection>)
@@ -20,19 +18,17 @@ class ContainerAdapter(private val context: Context,
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view){
         fun bind(context : Context,
                  section : RecyclerViewSection) {
-            val tvName = view.findViewById(R.id.SectionName) as TextView
-            val recyclerView = view.findViewById(R.id.recyclerView) as RecyclerView
 
-            tvName.text = section.label
-            recyclerView.setHasFixedSize(true)
-            recyclerView.isNestedScrollingEnabled = false
+            view.SectionName.text = section.label
+            view.recyclerView.setHasFixedSize(true)
+            view.recyclerView.isNestedScrollingEnabled = false
             val adapter =
                 WeekAdapter(
                     section.items
                 )
             val layoutManager = LinearLayoutManager( context)
-            recyclerView.layoutManager = layoutManager
-            recyclerView.adapter = adapter
+            view.recyclerView.layoutManager = layoutManager
+            view.recyclerView.adapter = adapter
         }
     }
 

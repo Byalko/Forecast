@@ -1,11 +1,9 @@
 package com.example.forecast.activity
 
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.forecast.R
 import com.example.forecast.adapter.ContainerAdapter
@@ -22,16 +20,15 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_week.*
 import java.text.SimpleDateFormat
-import java.time.LocalTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 import java.util.*
+import kotlinx.android.synthetic.main.activity_week.*
+
 
 
 class WeekActivity : Navigation(1) {
     private val TAG="WeekActivity"
-    private lateinit var weatherCity: TextView
     private lateinit var api: ApiService
     private lateinit var fusedLocationClient : FusedLocationProviderClient
     private var myCompositeDisposable: CompositeDisposable? = null
@@ -44,7 +41,6 @@ class WeekActivity : Navigation(1) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_week)
         setupBottomNavigation()
-        weatherCity = findViewById(R.id.city)
         myCompositeDisposable = CompositeDisposable()
         fusedLocationClient = LocationServices . getFusedLocationProviderClient ( this )
 
@@ -53,7 +49,6 @@ class WeekActivity : Navigation(1) {
     override fun onStart() {
         super.onStart()
         getLastLocation()
-        //weatherCity.text=lon.toString()
 
     }
 
@@ -73,9 +68,8 @@ class WeekActivity : Navigation(1) {
         Toast.makeText(this,t.message, Toast.LENGTH_SHORT).show()
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun onResponse(response: WeatherResponse) {
-        weatherCity.text=response.city.name
+        city.text=response.city.name
         val weath:List<WeatherList>
         weath= response.list
         var size=-1
