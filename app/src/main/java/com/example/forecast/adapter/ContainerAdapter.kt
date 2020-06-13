@@ -15,7 +15,7 @@ class ContainerAdapter(private val context: Context,
                        private val sections : List<RecyclerViewSection>)
     : RecyclerView.Adapter<ContainerAdapter.ViewHolder>() {
 
-    class ViewHolder(val view: View) : RecyclerView.ViewHolder(view){
+    class ViewHolder(private val view: View) : RecyclerView.ViewHolder(view){
         fun bind(context : Context,
                  section : RecyclerViewSection) {
 

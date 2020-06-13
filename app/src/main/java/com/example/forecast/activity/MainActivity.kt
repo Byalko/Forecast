@@ -8,11 +8,10 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.forecast.utils.Navigation
 import com.example.forecast.R
 import com.example.forecast.model.WeatherResponse
 import com.example.forecast.service.ApiService
-import com.example.forecast.service.RetrofitClient
+import com.example.forecast.utils.Navigation
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.Task
@@ -23,15 +22,15 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 
 
-open class MainActivity : Navigation(0) {
+class MainActivity : Navigation(0) {
     private var compas:String=""
     private var lon:Double?=null
     private var lat:Double?=null
     private lateinit var api:ApiService
 
-    private val TAG = "MainActivity"
-    var LOCATION_REQUEST_CODE = 10001
-    var fusedLocationProviderClient: FusedLocationProviderClient? = null
+    //private val TAG = "MainActivity"
+    private var LOCATION_REQUEST_CODE = 10001
+    private var fusedLocationProviderClient: FusedLocationProviderClient? = null
     private var myCompositeDisposable: CompositeDisposable? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,19 +39,33 @@ open class MainActivity : Navigation(0) {
         setupBottomNavigation()
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         myCompositeDisposable = CompositeDisposable()
-        val retrofit=RetrofitClient.instance
-        api=retrofit.create(ApiService::class.java)
+        api = ApiService.create()
+    }
 
+    private fun check():Boolean{
+        return if (getAndAsk()){
+            true
+        }else{
+            Toast.makeText(this@MainActivity, "Permission is't granted!!!", Toast.LENGTH_SHORT).show()
+            askLocationPermission()
+            false
+        }
     }
 
     override fun onStart() {
         super.onStart()
-        getAndAsk()
+        if(check()){
+            if (check2(this)){
+                getLastLocation()
+            }
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        getAndAsk()
+        if (check2(this)){
+            getLastLocation()
+        }
     }
 
     override fun onDestroy() {
@@ -62,21 +75,21 @@ open class MainActivity : Navigation(0) {
     }
 
     private fun getCurrentData() {
-//        val retrofit=RetrofitClient.instance
-//        api=retrofit.create(ApiService::class.java)
-
-        val observable = api.getCurrentWeatherData("${lat.toString()}", "${lon.toString()}","metric", "67901cf7da944ab97cf90b4656ad27b4")
+        myCompositeDisposable?.add(
+            api.getCurrentWeatherData(
+                lat.toString(), lon.toString(),
+                "metric", "67901cf7da944ab97cf90b4656ad27b4")
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe( { response -> onResponse(response) },{ error ->
                 Toast.makeText(this, error.message,Toast.LENGTH_SHORT).show()
-                Log.d(TAG, error.message)
+                Log.d("Get", error.message!!)
             } )
-
+        )
     }
 
     private fun onResponse(response: WeatherResponse) {
-        val url= "http://openweathermap.org/img/wn/"+ "${response.list[0].weather[0].icon}" +"@2x.png"
+        val url= "http://openweathermap.org/img/wn/"+ response.list[0].weather[0].icon +"@2x.png"
         Picasso.get()
             .load(url)
             .into(icon_wheat)
@@ -102,17 +115,24 @@ open class MainActivity : Navigation(0) {
         if(deg in 294..338)  this.compas="NW"
     }
 
-    private fun getAndAsk(){
+    private fun getAndAsk(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+    /*private fun getAndAsk(): Boolean {
         if (ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            getLastLocation()
+            return true
         } else {
-            askLocationPermission()
+            return false
+            //askLocationPermission()
         }
-    }
+    }*/
 
     private fun getLastLocation() {
         val locationTask: Task<Location> = fusedLocationProviderClient!!.lastLocation
@@ -124,18 +144,15 @@ open class MainActivity : Navigation(0) {
                 getCurrentData()
 
             } else {
-                Log.d(TAG, "onSuccess: Location was null...")
+                Log.d("Loc", "onSuccess: Location was null...")
             }
         }
         locationTask.addOnFailureListener { e ->
-            Log.e(
-                TAG,
-                "onFailure: " + e.localizedMessage
-            )
+            Log.e("Loc", "onFailure: " + e.localizedMessage)
         }
     }
 
-    private fun askLocationPermission() {
+    private fun askLocationPermission(): Boolean {
         if (ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -146,26 +163,26 @@ open class MainActivity : Navigation(0) {
                     Manifest.permission.ACCESS_FINE_LOCATION
                 )
             ) {
-                Log.d(
-                    TAG,
-                    "askLocationPermission: you should show an alert dialog..."
-                )
+                Log.d("Gps", "askLocationPermission: you should show an alert dialog...")
                 ActivityCompat.requestPermissions(
                     this,
                     arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                     LOCATION_REQUEST_CODE
                 )
+                return true
             } else {
                 ActivityCompat.requestPermissions(
                     this,
                     arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                     LOCATION_REQUEST_CODE
                 )
+                return false
             }
         }
+        return true
     }
 
-    override fun onRequestPermissionsResult(
+    /*override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String?>,
         grantResults: IntArray
@@ -178,6 +195,6 @@ open class MainActivity : Navigation(0) {
                 //Permission not granted
             }
         }
-    }
+    }*/
 
 }
