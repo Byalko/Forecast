@@ -1,6 +1,8 @@
 package com.example.forecast.activity
 
 import android.Manifest
+import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
@@ -26,10 +28,11 @@ class MainActivity : Navigation(0) {
     private var compas:String=""
     private var lon:Double?=null
     private var lat:Double?=null
+    private var txtShare:String?=null
+    private var weatherToWeek:WeatherResponse?=null
     private lateinit var api:ApiService
 
-    //private val TAG = "MainActivity"
-    private var LOCATION_REQUEST_CODE = 10001
+    private var locationRequestCode = 10001
     private var fusedLocationProviderClient: FusedLocationProviderClient? = null
     private var myCompositeDisposable: CompositeDisposable? = null
 
@@ -40,13 +43,29 @@ class MainActivity : Navigation(0) {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         myCompositeDisposable = CompositeDisposable()
         api = ApiService.create()
+        btn_share.setOnClickListener{
+            shareData()
+        }
+    }
+
+    private fun shareData(){
+        if (txtShare!=null){
+            val intent = Intent()
+            intent.action=Intent.ACTION_SEND
+            intent.putExtra(Intent.EXTRA_TEXT,txtShare)
+            intent.type="text/plain"
+            startActivity(Intent.createChooser(intent,"Select app:"))
+        }
+        else{
+            Toast.makeText(this,"No data to share!!!",Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun check():Boolean{
         return if (getAndAsk()){
             true
         }else{
-            Toast.makeText(this@MainActivity, "Permission is't granted!!!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Permission is't granted!!!", Toast.LENGTH_SHORT).show()
             askLocationPermission()
             false
         }
@@ -88,20 +107,26 @@ class MainActivity : Navigation(0) {
         )
     }
 
+    @SuppressLint("SetTextI18n")
     private fun onResponse(response: WeatherResponse) {
-        val url= "http://openweathermap.org/img/wn/"+ response.list[0].weather[0].icon +"@2x.png"
+        weatherToWeek=response
+        val url= "http://openweathermap.org/img/wn/${response.list[0].weather[0].icon}@2x.png"
         Picasso.get()
             .load(url)
             .into(icon_wheat)
         val strCity = response.city.name+", "+response.city.country
         city.text = strCity
-        gradusy.text=response.list[0].main.temp.toInt().toString()+"°C | "+response.list[0].weather[0].main
-        txt_rainfall.text=response.list[0].main.humidity.toString()+"%"
+        gradusy.text="${response.list[0].main.temp.toInt()} °C | ${response.list[0].weather[0].main}"
+        txt_rainfall.text="${response.list[0].main.humidity}%"
         //txt_water.text=response.list[0].rain.h.toString()+" mm"
-        txt_degree.text=response.list[0].main.pressure.toString()+" hPa"
-        txt_wind.text=((response.list[0].wind.speed)*3.6).toInt().toString()+" km/h"
+        txt_degree.text="${response.list[0].main.pressure} hPa"
+        txt_wind.text="${((response.list[0].wind.speed)*3.6).toInt()} km/h"
         direction(response.list[0].wind.deg)
         txt_compass.text=compas
+        txtShare= "$strCity\n Degrees: ${response.list[0].main.temp.toInt()} °C | ${response.list[0].weather[0].main}\n " +
+                "Humidity: ${response.list[0].main.humidity}%\n " +
+                "Atmospheric pressure: ${response.list[0].main.pressure} hPa\n " +
+                "Wind speed: ${((response.list[0].wind.speed)*3.6).toInt()} km/h\n Wind direction: $compas"
     }
 
     private fun direction(deg: Int) {
@@ -167,14 +192,14 @@ class MainActivity : Navigation(0) {
                 ActivityCompat.requestPermissions(
                     this,
                     arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                    LOCATION_REQUEST_CODE
+                    locationRequestCode
                 )
                 return true
             } else {
                 ActivityCompat.requestPermissions(
                     this,
                     arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                    LOCATION_REQUEST_CODE
+                    locationRequestCode
                 )
                 return false
             }
