@@ -6,6 +6,7 @@ import com.example.forecast.R
 import com.example.forecast.activity.MainActivity
 import com.example.forecast.activity.WeekActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlin.math.absoluteValue
 
 abstract class Navigation(private val navNumb:Int): AppCompatActivity() {
     fun setupBottomNavigation(){
@@ -20,11 +21,18 @@ abstract class Navigation(private val navNumb:Int): AppCompatActivity() {
                 val intent = Intent(this,nextActivity)
                 intent.flags= Intent.FLAG_ACTIVITY_NO_ANIMATION
                 startActivity(intent)
+                overridePendingTransition(0,0)
                 true
             } else {false}
 
         }
-        bottom_navigation_view.menu.getItem(navNumb).isChecked=true
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (bottom_navigation_view!=null){
+            bottom_navigation_view.menu.getItem(navNumb).isChecked=true
+        }
     }
 
 }
