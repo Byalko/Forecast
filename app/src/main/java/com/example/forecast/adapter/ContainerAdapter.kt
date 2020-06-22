@@ -1,6 +1,5 @@
 package com.example.forecast.adapter
 
-import WeekAdapter
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View

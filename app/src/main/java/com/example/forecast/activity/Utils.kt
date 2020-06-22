@@ -7,7 +7,7 @@ import android.widget.Toast
 import java.text.SimpleDateFormat
 import java.util.*
 
-fun ParseDate(date:String, pattern:String): String {
+fun parseDate(date:String, pattern:String): String {
     val parser =  SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss", Locale.ENGLISH)
     val formatter = SimpleDateFormat(pattern, Locale.ENGLISH)
     return formatter.format(parser.parse(date)!!)
@@ -37,8 +37,7 @@ fun isOnline(context: Context): Boolean {
 
 fun isOnlineGps(context: Context): Boolean {
     val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-    val gps_enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-    return gps_enabled
+    return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
 }
 
 fun check2(context: Context):Boolean{

@@ -17,7 +17,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_week.*
-import java.time.DayOfWeek
 
 
 class WeekActivity : Navigation(1) {
@@ -109,7 +108,7 @@ class WeekActivity : Navigation(1) {
     private fun inicializeSections(weath:List<WeatherList>): MutableList<RecyclerViewSection> {
         var size=0
         for (i in 1..7){
-            if (ParseDate(weath[0].dt_txt,"dd.MM.yyyy")==ParseDate(weath[i].dt_txt,"dd.MM.yyyy")){
+            if (parseDate(weath[0].dt_txt,"dd.MM.yyyy")==parseDate(weath[i].dt_txt,"dd.MM.yyyy")){
                 size += 1
             }
         }
@@ -128,16 +127,16 @@ class WeekActivity : Navigation(1) {
             for (ii in size+1..size+8) {
                 items.add(weath[ii])
             }
-            val dayOfWeek=ParseDate(weath[size+8].dt_txt,"E")
+            val dayOfWeek=parseDate(weath[size+8].dt_txt,"E")
             size+=8
 
-            val section = RecyclerViewSection(DayOfWeek(dayOfWeek), items)
+            val section = RecyclerViewSection(dayOfWeek(dayOfWeek), items)
             sections.add(section)
         }
         return sections
     }
 
-    private fun DayOfWeek(day:String): String {
+     private fun dayOfWeek(day:String): String {
         return when(day){
             "Mon"->"MONDAY"
             "Tue"->"TUESDAY"

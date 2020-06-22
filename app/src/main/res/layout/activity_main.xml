@@ -50,7 +50,7 @@
         android:layout_marginTop="40dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/line_after_toolbar"/>
+        app:layout_constraintTop_toBottomOf="@id/line_after_toolbar" />
 
     <TextView
         android:id="@+id/city"
@@ -81,7 +81,7 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ic_rainfall"
         style="@style/icon_today"
-        android:layout_marginRight="40dp"
+        android:layout_marginEnd="40dp"
         android:src="@drawable/ic_action_name"
         app:layout_constraintRight_toRightOf="@id/ic_water"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -91,7 +91,7 @@
     <TextView
         android:id="@+id/txt_rainfall"
         style="@style/txt_today"
-        android:layout_marginRight="40dp"
+        android:layout_marginEnd="40dp"
         app:layout_constraintRight_toRightOf="@id/ic_water"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ic_rainfall" />
@@ -116,7 +116,7 @@
         android:id="@+id/ic_degree"
         style="@style/icon_today"
         android:src="@drawable/ic_degree"
-        android:layout_marginLeft="40dp"
+        android:layout_marginStart="40dp"
         app:layout_constraintLeft_toLeftOf="@id/ic_water"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/line1"
@@ -125,7 +125,7 @@
         android:id="@+id/txt_degree"
         android:layout_width="100dp"
         style="@style/txt_today"
-        android:layout_marginLeft="40dp"
+        android:layout_marginStart="40dp"
         app:layout_constraintLeft_toLeftOf="@id/ic_water"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ic_water" />
@@ -172,6 +172,7 @@
         app:layout_constraintLeft_toLeftOf="parent" />
 
     <TextView
+        android:id="@+id/btn_share"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/line2"
