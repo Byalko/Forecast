@@ -8,6 +8,7 @@
     <TextView
         android:id="@+id/SectionName"
         android:layout_width="match_parent"
+        android:textColor="@color/Black"
         tools:text='Section 1'
         android:padding="16dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"

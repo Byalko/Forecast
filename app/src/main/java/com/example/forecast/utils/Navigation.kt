@@ -1,7 +1,12 @@
 package com.example.forecast.utils
 
 import android.content.Intent
+import android.graphics.Color
+import android.os.Build
+import android.view.View
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.example.forecast.R
 import com.example.forecast.activity.MainActivity
 import com.example.forecast.activity.WeekActivity
@@ -10,6 +15,11 @@ import kotlin.math.absoluteValue
 
 abstract class Navigation(private val navNumb:Int): AppCompatActivity() {
     fun setupBottomNavigation(){
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            window.statusBarColor = Color.parseColor("#DBD7D2")
+        }
+
         bottom_navigation_view.setOnNavigationItemSelectedListener {
             val nextActivity=
                 when(it.itemId){

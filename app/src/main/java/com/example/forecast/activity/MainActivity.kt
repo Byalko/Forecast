@@ -43,7 +43,8 @@ class MainActivity : Navigation(0) {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         myCompositeDisposable = CompositeDisposable()
         api = ApiService.create()
-        btn_share.setOnClickListener{
+        //btn_share
+        cancel_button.setOnClickListener{
             shareData()
         }
     }

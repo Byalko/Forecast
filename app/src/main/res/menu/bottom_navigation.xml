@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:title = "today"
+    <item android:title = "@string/menu_today"
         android:id = "@+id/bottom_navigation_today"
         android:icon = "@drawable/ic_today" />
-    <item android:title = "week"
+    <item android:title = "@string/menu_week"
         android:id = "@+id/bottom_navigation_week"
         android:icon = "@drawable/ic_week" />
 
