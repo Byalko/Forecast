@@ -28,6 +28,7 @@ class ContainerAdapter(private val context: Context,
             view.recyclerView.isNestedScrollingEnabled = false
             val adapter =
                 WeekAdapter(
+                    context,
                     section.items
                 )
             val layoutManager = LinearLayoutManager( context)

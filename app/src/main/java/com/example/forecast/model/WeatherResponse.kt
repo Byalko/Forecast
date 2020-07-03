@@ -20,7 +20,8 @@ data class WeatherList(
     @SerializedName("clouds") val clouds: Clouds,
     @SerializedName("rain") val rain: Rain,
     @SerializedName("wind") val wind: Wind,
-    @SerializedName("dt_txt") val dt_txt: String
+    @SerializedName("dt_txt") val dt_txt: String,
+    var check:Boolean=false
 ) : Serializable
 
 data class Main (
