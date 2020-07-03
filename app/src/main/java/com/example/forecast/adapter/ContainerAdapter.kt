@@ -4,11 +4,16 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.view.menu.MenuView
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.forecast.R
 import com.example.forecast.model.RecyclerViewSection
 import kotlinx.android.synthetic.main.item_container.view.*
+import okhttp3.internal.notify
+import okhttp3.internal.notifyAll
 
 class ContainerAdapter(private val context: Context,
                        private val sections : List<RecyclerViewSection>)
@@ -29,6 +34,7 @@ class ContainerAdapter(private val context: Context,
             view.recyclerView.layoutManager = layoutManager
             view.recyclerView.adapter = adapter
         }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -43,5 +49,13 @@ class ContainerAdapter(private val context: Context,
         val section = sections[position]
         holder.bind(context,
             section)
+
+        val isExpandable:Boolean=section.expanded
+        holder.itemView.expandableLayout.visibility=if(isExpandable)  View.VISIBLE else View.GONE
+        holder.itemView.setOnClickListener {
+            val sectionC=sections[position]
+            sectionC.expanded=!sectionC.expanded
+            notifyItemChanged(position)
+        }
     }
 }
