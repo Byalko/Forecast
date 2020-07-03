@@ -5,7 +5,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.forecast.R
@@ -41,9 +40,9 @@ class WeekAdapter(private val context: Context,
                 .into(holder.view.ImageItem)
 
             val isExpandable:Boolean=post.check
-            view.ConstLayoutRow.background=
-                if(isExpandable)  ContextCompat.getDrawable(context,R.drawable.bg_for_items_clicked)
-            else null //ContextCompat.getDrawable(context,R.drawable.bg_for_items)
+            view.ConstLayoutRow.background=if(isExpandable)
+                ContextCompat.getDrawable(context,R.drawable.bg_for_items_clicked)
+            else null
 
             view.ConstLayoutRow.setOnClickListener {
                 val postC=weather[position]

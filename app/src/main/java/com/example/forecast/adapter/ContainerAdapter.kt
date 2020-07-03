@@ -4,16 +4,11 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.appcompat.view.menu.MenuView
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.forecast.R
 import com.example.forecast.model.RecyclerViewSection
 import kotlinx.android.synthetic.main.item_container.view.*
-import okhttp3.internal.notify
-import okhttp3.internal.notifyAll
 
 class ContainerAdapter(private val context: Context,
                        private val sections : List<RecyclerViewSection>)

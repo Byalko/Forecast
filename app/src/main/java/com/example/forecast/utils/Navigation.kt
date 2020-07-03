@@ -3,15 +3,11 @@ package com.example.forecast.utils
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
-import android.view.View
-import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import com.example.forecast.R
 import com.example.forecast.activity.MainActivity
 import com.example.forecast.activity.WeekActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlin.math.absoluteValue
 
 abstract class Navigation(private val navNumb:Int): AppCompatActivity() {
     fun setupBottomNavigation(){
